@@ -1,0 +1,137 @@
+<!doctype html>
+<link rel="shortcut icon" type="image/x-icon" href="/static/favicon-map.ico">
+<html>
+  <head>
+    <title>HAI Dashboard Prototype</title>
+    <!-- scripts -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script language="javascript" type="text/javascript" src="/static/hospitalmapping.js"></script>
+    <!-- Leaflet and shapfile plugin -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.2/dist/leaflet.css"/>
+	  <script src="https://unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script>
+    <script language="javascript" type="text/javascript" src="/static/shp.js"></script>
+    <script language="javascript" type="text/javascript" src="/static/leaflet.shpfile.js"></script>
+    <!-- Date Range Picker http://www.daterangepicker.com/ -->
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/3/css/bootstrap.css" />
+    <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+    <!-- sortable tables by http://tablesorter.com/docs/-->
+    <!-- <script type="text/javascript" src="/static/jquery.tablesorter.min.js"></script>-->
+    <!-- <link rel="stylesheet" type="text/css" href="/static/style.css" />-->
+    <!-- boxzoom @ https://github.com/consbio/Leaflet.ZoomBox -->
+    <!-- <link rel="stylesheet" href="https://cdn.rawgit.com/consbio/Leaflet.ZoomBox/master/L.Control.ZoomBox.css" /> -->
+    <!-- <script type="application/javascript" src="https://cdn.rawgit.com/consbio/Leaflet.ZoomBox/master/L.Control.ZoomBox.min.js"></script> -->
+    <!-- d3.js -->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <!-- datatables -->
+    <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css" />
+    <!-- plot.ly -->
+    <script type="text/javascript" src="//cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+      var socket = io();
+      socket.on('connect',function(){
+        socket.emit('mapping client connected','message value');
+      });
+    </script>
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+        html, body, #mapdiv {
+            height: 100%;
+            width: 100%;
+        }
+        #mapdiv{
+          z-index:0;
+        }
+        #overlay{
+          position:absolute;
+          right:0;
+          top:0;
+          margin-left:auto;
+          margin-right:auto;
+          width:600px;
+          height:100%;
+          background-color: rgba(40,40,40,0.75);
+          color: #FFF;
+          padding:10px;
+          text-align:center;
+        }
+        #datetime{
+          position:relative;
+          height:32px;
+          width:177.6px;
+          float:left;
+        }
+        #instructions{
+          width:auto;
+          overflow:hidden;
+        }
+        #glyph{
+          position: absolute;
+          padding:5px;
+          right:-1px;
+        }
+        .leaflet-tooltip{
+          position:absolute;
+          padding:6px;
+          color:#000;
+          background-color:rgba(0,0,0,0);
+          white-space:nowrap;
+          border:none;
+          box-shadow:none;
+          border-radius:0;
+          font-weight:900;
+        }
+        #datatable_filter > label{
+          color:#fff;
+        }
+        #datatable_filter > label > input{
+          color:#000;
+        }
+        #datatable_info{
+          color:#fff;
+        }
+        #datatable{
+          color:#000;
+        }
+    </style>
+  </head>
+  <body>
+      <div id="mapdiv">
+      </div>
+      <div id="overlay">
+        <div id="title" style="border:2px solid white; outline: 2px solid black;font-size:30px;background-color: rgba(187,0,0,1)">
+          HAI Dashboard
+        </div>
+        <br>
+        <div id="header">
+          <div id="datetime">
+            <input type="text" style="color:black;width:177.6px" id="daterange"/>
+            <span id="glyph" class="glyphicon glyphicon-calendar fa fa-calendar" style="color:black"></span>
+          </div>
+          <div id="instructions">
+            Click to select rooms. Hold down shift, then click and drag to select multiple rooms. Press ESC to de-select.
+          </div>
+        </div>
+        <hr style="margin-top:5px;margin-bottom:5px;">
+        <table id="datatable" class="display">
+        </table>
+        <div id="footer" style="position:absolute;display:block; left:10px; bottom:10px;right:10px;height:200px;">
+          <div id="credits" style="border:2px solid white;font-size:11px;height:200px;width:180px;float:right;">
+            <img src="/static/Wexner.png" width="177px">
+            <br>Dr. Courtney Hebert, MD, MS
+            <br><a href="mailto:Courtney.Hebert@osumc.edu?Subject=HAI%20Dashboard" style="color:white;">&lt;Courtney.Hebert@osumc.edu&gt;</a>
+            <br>Sean Yu, MS
+            <br><a href="mailto:Sean.Yu@osumc.edu?Subject=HAI%20Dashboard" style="color:white;">&lt;Sean.Yu@osumc.edu&gt;</a>
+          </div>
+          <div id="plot" style="border:2px solid white;width:auto;height:200px;overflow:hidden;"></div>
+        </div>
+      </div>
+  </body>
+</html>

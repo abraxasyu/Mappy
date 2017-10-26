@@ -1,0 +1,12 @@
+{
+  "name": "HospitalMapping",
+  "version": "0.0.1",
+  "description": "hospital mapping with nodejs socketio expressjs",
+  "dependencies": {
+    "aws-sdk": "^2.18.0",
+    "express": "^4.14.1",
+    "leaflet-zoombox": "^0.3.4",
+    "pg": "^6.1.2",
+    "socket.io": "^1.7.3"
+  }
+}
